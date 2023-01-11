@@ -758,16 +758,39 @@ def refresh_db():
             if name[:-16] == 'Backup_Ведомость учащихся':
                 date = name[-15:-5]
 
-    try:
-        os.remove('mydatabase.db')
-    except FileNotFoundError:
+    if not os.path.exists('mydatabase.db'):
         print('Файла с БД нет. Создаю')
+        create_db()
 
-    create_db()
-    parse_excel_main('db.xlsx')
-    parse_excel_asks('asks.xlsx')
-    parse_excel_email('email.xlsx')
-    parse_excel_programs('programs.xlsx')
+    conn = sqlite3.connect("mydatabase.db")  # или :memory: чтобы сохранить в RAM
+    cursor = conn.cursor()
+    # Удаляем таблицы
+    cursor.execute('DROP TABLE IF EXISTS main_db')
+    cursor.execute('DROP TABLE IF EXISTS asks_base')
+    cursor.execute('DROP TABLE IF EXISTS emails')
+    cursor.execute('DROP TABLE IF EXISTS date')
+    cursor.execute('DROP TABLE IF EXISTS programs')
+
+    try:
+        parse_excel_main('db.xlsx')
+    except FileNotFoundError:
+        logger.debug('отсутствует файл db.xlsx')
+        pass
+    try:
+        parse_excel_asks('asks.xlsx')
+    except FileNotFoundError:
+        logger.debug('отсутствует файл asks.xlsx')
+        pass
+    try:
+        parse_excel_email('email.xlsx')
+    except FileNotFoundError:
+        logger.debug('отсутствует файл email.xlsx')
+        raise FileNotFoundError("Отсутствует список почтовых адресов сотрудников")
+    try:
+        parse_excel_programs('programs.xlsx')
+    except FileNotFoundError:
+        logger.debug('отсутствует файл programs.xlsx')
+        pass
 
     conn = sqlite3.connect("mydatabase.db")  # или :memory: чтобы сохранить в RAM
     cursor = conn.cursor()

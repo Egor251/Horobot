@@ -81,6 +81,7 @@ def get_imap():
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(name)s %(levelname)s:%(message)s',
                         filename='emails.log')
     logger = logging.getLogger(__name__)
+    logger.debug('Старт функции get_imap')
 
     def parse_mail(id):
         result, data = mail.fetch(id, "(RFC822)")  # Получаем тело письма (RFC822) для данного ID
@@ -275,20 +276,20 @@ def get_imap():
         print(signal)
         return(signal)
 
-
-
     while True:
         try:
             mail = imaplib.IMAP4_SSL('imap.yandex.ru')
             mail.login(my_mail, my_password)
             mail.list()  # Выводит список папок в почтовом ящике.
             mail.select("inbox")  # Подключаемся к папке "входящие".
+            logger.debug('Подключение к почтовому ящику')
             break
         except Exception:
+            logger.warning('Не удалось подключиться к почтовому ящику')
             time.sleep(300)
     result, message = mail.search(None, 'UNSEEN')
 
-    ids = message[0]  # Получаем сроку номеров писем
+    ids = message[0]  # Получаем строку номеров писем
     id_list = ids.split()  # Разделяем ID писем
     recive_signal = 0
     send_signal = 0

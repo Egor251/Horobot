@@ -200,7 +200,11 @@ def __init__():
         return(f"Total_file{date[2:-3]}.xlsx")
 
     def clear_folder(folder):
-        list_files = os.listdir(folder)
+        try:
+            list_files = os.listdir(folder)
+        except FileNotFoundError:
+            os.mkdir(folder)
+            list_files = os.listdir(folder)
         for file in list_files:
             os.remove(f'{folder}/{file}')
 

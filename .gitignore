@@ -1,0 +1,6 @@
+emails.log
+settings.ini
+/**/*.xlsx
+/**/*.db
+/.idea/
+/_pycache_/
