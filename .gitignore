@@ -3,4 +3,4 @@ settings.ini
 /**/*.xlsx
 /**/*.db
 /.idea/
-/_pycache_/
+/__pycache__/
