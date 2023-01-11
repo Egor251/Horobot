@@ -770,6 +770,8 @@ def refresh_db():
     cursor.execute('DROP TABLE IF EXISTS emails')
     cursor.execute('DROP TABLE IF EXISTS date')
     cursor.execute('DROP TABLE IF EXISTS programs')
+    conn.commit()
+    create_db()
 
     try:
         parse_excel_main('db.xlsx')
