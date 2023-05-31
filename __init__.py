@@ -69,7 +69,6 @@ except ImportError:
             os.system('pip install ConfigParser')
             import ConfigParser
 
-
 def renew_log():
     try:
         size = os.path.getsize('emails.log')
@@ -77,8 +76,6 @@ def renew_log():
             os.remove('emails.log')
     except PermissionError:
         pass
-
-
 def __init__():
     renew_log()
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(name)s %(levelname)s:%(message)s',
@@ -226,12 +223,10 @@ def __init__():
         main.refresh_db()
         main.mail_bomb()
 
-
 if __name__ == '__main__':
     print('Запуск')
     renew_log()
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(name)s %(levelname)s:%(message)s',
-                        filename='emails.log')
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(name)s %(levelname)s:%(message)s', filename='emails.log')
     logger = logging.getLogger(__name__)
     path = "settings.ini"
     if not os.path.exists(path):

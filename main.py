@@ -3,6 +3,7 @@ import os
 import time
 from create_config import create_config
 import datetime
+
 try:
     import sqlite3                                      # БД
 except ImportError:
@@ -14,7 +15,7 @@ except ImportError:
         import sqlite3
 
 try:
-    import xlrd                                      # Чтение xlsx обязательно версия 1.2.0
+    import xlrd                                         # Чтение xlsx обязательно версия 1.2.0
 except ImportError:
     try:
         os.system('pip3 install xlrd==1.2.0')
@@ -24,7 +25,7 @@ except ImportError:
         import xlrd
 
 try:
-    import smtplib                                   # отправка писем
+    import smtplib                                      # отправка писем
 except ImportError:
     try:
         os.system('pip3 install smtplib')
@@ -34,7 +35,7 @@ except ImportError:
         import smtplib
 
 try:
-    import xlsxwriter                               # Создание xlsx
+    import xlsxwriter                                   # Создание xlsx
 except ImportError:
     try:
         os.system('pip3 install xslxwriter')
@@ -44,20 +45,20 @@ except ImportError:
         import xlsxwriter
 
 try:
-    from email import encoders  # Модули для формирования письма
+    from email import encoders                          # Модули для формирования письма
     from email.mime.base import MIMEBase
     from email.mime.multipart import MIMEMultipart
     from email.mime.text import MIMEText
 except ImportError:
     try:
         os.system('pip3 install email')
-        from email import encoders  # Модули для формирования письма
+        from email import encoders                      # Модули для формирования письма
         from email.mime.base import MIMEBase
         from email.mime.multipart import MIMEMultipart
         from email.mime.text import MIMEText
     except Exception:
         os.system('pip install email')
-        from email import encoders  # Модули для формирования письма
+        from email import encoders                      # Модули для формирования письма
         from email.mime.base import MIMEBase
         from email.mime.multipart import MIMEMultipart
         from email.mime.text import MIMEText
@@ -73,7 +74,7 @@ except ImportError:
         from transliterate import translit
 
 try:
-    import zipfile                               # Создание архивов
+    import zipfile                                      # Создание архивов
 except ImportError:
     try:
         os.system('pip3 install zipfile')
@@ -83,7 +84,7 @@ except ImportError:
         import zipfile
 
 try:
-    import shutil                               # Копирование файлов
+    import shutil                                       # Копирование файлов
 except ImportError:
     try:
         os.system('pip3 install shutil')
@@ -101,8 +102,9 @@ except ImportError:
     except Exception:
         os.system('pip install tqdm')
         from tqdm import tqdm
+
 try:
-    import logging                               # Логгирование
+    import logging                                      # Логгирование
 except ImportError:
     try:
         os.system('pip3 install logging')
@@ -140,7 +142,6 @@ SMTP_server = config.get("Settings", "SMTP_server")
 SMTP_port = config.get("Settings", "SMTP_port")
 kachanova_mail = config.get("Settings", "kachanova_mail")
 
-
 def calculate_age(born):
     today = datetime.date.today()
     try:
@@ -151,8 +152,6 @@ def calculate_age(born):
         return today.year - born.year - 1
     else:
         return today.year - born.year
-
-
 def unique(list1):
     unique = []
     for number in list1:
@@ -215,11 +214,10 @@ def send_email(adr, subject, body, file=None):
 
     logger.exception('Send_mail error: ')
     time.sleep(30)
-
-
 def make_file(teacher, signal=0):  # формируем файлы для рассылки
     conn = sqlite3.connect("mydatabase.db")  # или :memory: чтобы сохранить в RAM
     cursor = conn.cursor()
+
     def get_programs(teacher):
         cursor.execute("SELECT program FROM main_db WHERE teacher = ?;", (teacher,))
         list_tmp = cursor.fetchall()
@@ -228,6 +226,7 @@ def make_file(teacher, signal=0):  # формируем файлы для рас
         list_tmp += list1_tmp
         list_tmp = unique(list_tmp)
         return (list_tmp)
+
     sig = 0
     list1 = get_programs(teacher)
     head = ['Номер заявления', 'Дата заявления', 'ФИО Ученика', 'Дата рождения', 'ФИО заявителя', 'Телефон',
@@ -393,10 +392,10 @@ def make_file(teacher, signal=0):  # формируем файлы для рас
         worksheet.write(row, 0, '?', waiting)
         worksheet.write(row, 1, '-', usual)
         worksheet.write(row, 2, 'Ожидание', usual)
+
     workbook.close()
+
     return (sig)
-
-
 def normal_date(date):     # В ходе парсинга экселя дата выходит неправильная. Исправляем
     test = 0
     try:
@@ -413,8 +412,6 @@ def normal_date(date):     # В ходе парсинга экселя дата 
         str_tmp = str(xlrd.xldate.xldate_as_datetime(date, "%d.%m.%Y"))[:-9]
         date = f'{str(int(str_tmp[-2:])-1).zfill(2)}.{str_tmp[5:7]}.{str(int(str_tmp[0:4])-4)}'
     return date
-
-
 def get_programs(teacher):
     list_tmp = cursor.execute(f"SELECT program FROM main_db WHERE teacher = ?;", (teacher,))
     list_tmp = unique(list_tmp)
@@ -423,8 +420,6 @@ def get_programs(teacher):
         list_out.append(*i)
 
     return (list_out)
-
-
 def ask_mail_bomb():
     refresh_db()
     ask_list = []
@@ -469,8 +464,6 @@ def ask_mail_bomb():
     send_email(kachanova_mail, subject, body)
     logger.error('Ошибка при отправке итогового файла: ', exc_info=True)
     conn.commit()
-
-
 def mail_bomb(name=None):
     logger.info('Начинаем рассылку детей')
     refresh_db()
@@ -539,8 +532,6 @@ def mail_bomb(name=None):
         #send_email('ngushchina@mail.ru', subject, body, 'all_teachers_file.zip')
         logger.error('Ошибка при отправке итогового файла: ', exc_info=True)
     os.remove('all_teachers_file.zip')
-
-
 def file_bomb():
     newzip = zipfile.ZipFile(r'all_teachers_file.zip', 'w')
 
@@ -567,8 +558,6 @@ def file_bomb():
             os.rename(f'{new_name}.xlsx', f'files\\{new_name}.xlsx')
             pass
     newzip.close()
-
-
 def refresh_db():
     def create_db():
         conn = sqlite3.connect("mydatabase.db")  # или :memory: чтобы сохранить в RAM
@@ -594,7 +583,6 @@ def refresh_db():
         cursor.execute("""CREATE TABLE IF NOT EXISTS programs
                                   (program text,  teacher text)""")
         conn.commit()
-
     def parse_excel_main(file):
         conn = sqlite3.connect("mydatabase.db")
         cursor = conn.cursor()
@@ -607,7 +595,6 @@ def refresh_db():
 
             cursor.executemany("INSERT INTO main_db VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (row[1:],))
         conn.commit()
-
     def parse_excel_asks(file):
         conn = sqlite3.connect("mydatabase.db")
         cursor = conn.cursor()
@@ -619,7 +606,6 @@ def refresh_db():
             row[7] = row_tmp
             cursor.executemany("INSERT INTO asks_base VALUES (?,?,?,?,?,?,?,?,?,?,?)", (row,))
         conn.commit()
-
     def parse_excel_email(file):
         conn = sqlite3.connect("mydatabase.db")
         cursor = conn.cursor()
@@ -631,7 +617,6 @@ def refresh_db():
                 row[i] = row[i].lower().capitalize()
             cursor.executemany("INSERT INTO emails VALUES (?,?,?,?)", (row,))
         conn.commit()
-
     def parse_excel_programs(file):
         conn = sqlite3.connect("mydatabase.db")
         cursor = conn.cursor()
@@ -800,7 +785,6 @@ def refresh_db():
     cursor.execute('INSERT INTO date (date) VALUES (?)', (date,))
     conn.commit()
 
-
 path = "settings.ini"
 if not os.path.exists(path):
     create_config(path)
@@ -810,7 +794,6 @@ my_mail = config.get("Settings", "email")
 my_password = config.get("Settings", "password")
 SMTP_server = config.get("Settings", "SMTP_server")
 SMTP_port = config.get("Settings", "SMTP_port")
-
 
 if __name__ == '__main__':
 
