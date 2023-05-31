@@ -7,6 +7,7 @@ from minusing_alternative import minusing_alternative
 from create_config import create_config
 from email.header import decode_header
 import time
+from enrollment import enrollment
 
 try:
     import poplib                                       # приём pop3 писем
@@ -187,6 +188,8 @@ def get_imap():
                    'В случае неправильного использования есть вероятность, ' \
                    'что бот словит экзистенциальный кризис и откажется работать!'
             send_email(sender, "Инструкция по использованию бота", body)
+        elif subject == 'Зачисление':
+            signal = 10
 
         logger.info(f'Signal = {signal}')
 
@@ -293,6 +296,16 @@ def get_imap():
             body = f'{sender} Сообщил: \n {error_message}'
             send_email(admin_mail, base_message_subject, body)
             logger.warning(admin_mail, base_message_subject, body)
+            signal = 0
+
+        elif signal == 10:
+            try:
+                send_email(sender, 'Результат на Зачисление', ' Система в рабочем режиме! Живые люди больше" \
+               " не проверяют этот почтовый ящик!', enrollment('download/назачисление.xlsx'))
+                logger.info('Сформирован список для приказов на Зачисление, результат отправлен обратно')
+            except FileNotFoundError:
+                send_email(sender, 'Ошибка при формировании списка для приказов на Зачисление', 'Перепроверьте отправленные данные')
+                logger.exception('Получен список для формирования приказа на Зачисление, получена ошибка: ')
             signal = 0
 
         print(signal)
