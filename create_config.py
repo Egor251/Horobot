@@ -3,7 +3,6 @@ try:
 except ImportError:
     import ConfigParser as configparser
 
-
 def create_config(path):
     """
     Create a config file
