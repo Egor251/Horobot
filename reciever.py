@@ -106,7 +106,8 @@ def get_imap():
         text = message["subject"]
 
         try:
-            sender = message["from"].split()[1][1:-1]   # Выковыриваем адрес отправителя
+            #sender = message["from"].split()[1][1:-1]   # Выковыриваем адрес отправителя
+            sender = message["from"].split()[0]
         except IndexError:
             sender = 'yandex'
 
