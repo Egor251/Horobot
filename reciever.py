@@ -105,12 +105,17 @@ def get_imap():
 
         text = message["subject"]
 
+        message_from = []
         try:
-            #sender = message["from"].split()[1][1:-1]   # Выковыриваем адрес отправителя
-            sender = message["from"].split()[0]
+            message_from = message["from"].split()
+            if len(message_from) > 1:
+                sender = message["from"].split()[1][1:-1]   # Выковыриваем адрес отправителя
+            else:
+                sender = message["from"].split()[0]
         except IndexError:
             sender = 'yandex'
-
+        print(f'message_from = {message_from}')
+        print(f'sender = {sender}')
         try:
             subject = decode_header(str(text))
             logger.exception('decode_header: ')
