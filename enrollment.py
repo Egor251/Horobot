@@ -62,6 +62,8 @@ def enrollment(list, output='result.xlsx'):
                                 item[12],
                                 item[8], ])
 
+    result_list.sort(key = lambda x: x[6])
+
     workbook = xlsxwriter.Workbook(output)
 
     worksheet_budget = workbook.add_worksheet('БЮДЖЕТ')

@@ -82,6 +82,8 @@ def minusing_alternative(old, new, output='result.xlsx'):
                                 full_list[list_old.index(item)][12],
                                 full_list[list_old.index(item)][8], ])
 
+    result_list.sort(key = lambda x: x[6])
+
     workbook = xlsxwriter.Workbook(output)
     worksheet_budget = workbook.add_worksheet('БЮДЖЕТ')
 
