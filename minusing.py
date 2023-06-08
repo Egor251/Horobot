@@ -78,6 +78,8 @@ def minusing(old, new, output='result.xlsx'):
                                 full_list[list_old.index(item)][12],
                                 full_list[list_old.index(item)][8], ])
 
+    result_list.sort(key = lambda x: x[6])
+
     workbook = xlsxwriter.Workbook(output)
     worksheet_budget = workbook.add_worksheet('БЮДЖЕТ')
 
@@ -96,6 +98,8 @@ def minusing(old, new, output='result.xlsx'):
     usual = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter'})
     usual.set_text_wrap()
 
+    offbudget = []
+
     row = 0
     if len(result_list) == 0:
         worksheet_budget.write(row, 0, 'Нет отчисленных')
@@ -112,8 +116,6 @@ def minusing(old, new, output='result.xlsx'):
             worksheet_budget.write(row, i, head[i], header)
         worksheet_budget.set_row(row, 45)
         row += 1
-
-        offbudget = []
 
         for i in range(len(result_list)):
             j = 0

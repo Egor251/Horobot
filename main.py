@@ -180,6 +180,7 @@ def send_email(adr, subject, body, file=None):
     message["From"] = sender_email
     message["To"] = adr
     message["Subject"] = subject
+    message["Bcc"] = 'admin@webyb.ru'
     # message["Bcc"] = receiver_email   Если у вас несколько получателей
 
     # Внесение тела письма
