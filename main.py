@@ -261,6 +261,7 @@ def make_file(teacher, signal=0):  # формируем файлы для рас
         for i in range(len(head)):  # Заголовок
             worksheet.write(row, i, head[i], header)
         row += 1
+        empty_programs = []
         for program in list1:  # Поданы документы будут добавляться только в сентябре и мае
             if datetime.datetime.now().strftime('%m') == '09' or '05':
                 sql = f'''SELECT ask_number,  ask_date, child_name, birth_date, parent_name, phone, program, 
@@ -275,12 +276,17 @@ def make_file(teacher, signal=0):  # формируем файлы для рас
             cursor.execute(sql)
             data = cursor.fetchall()
             row += 1
-            worksheet.write(row, 0, program[0], bold)  # Программа
-            row += 1
+#            worksheet.write(row, 0, program[0], bold)  # Программа
+#            row += 1
             if len(data) == 0:
-                worksheet.write(row, 0, 'Нет заявок', no)
-                row += 1
+ #               worksheet.write(row, 0, program[0], bold)  # Программа
+ #               row += 1
+ #               worksheet.write(row, 0, 'Нет заявок', no)
+ #               row += 1
+                empty_programs.append(program[0])
             else:
+                worksheet.write(row, 0, program[0], bold)  # Программа
+                row += 1
                 if signal != 0:
                     sig = 1
                 for i in range(len(data)):
@@ -293,6 +299,11 @@ def make_file(teacher, signal=0):  # формируем файлы для рас
                             data_tmp = data[i][j]
                         worksheet.write(row, j, data_tmp, usual)  # Заявки
                     row += 1
+        for empty_program in empty_programs:
+            worksheet.write(row, 0, empty_program, bold)  # Программа
+            row += 1
+            worksheet.write(row, 0, 'Нет заявок', no)
+            row += 1
 
     # Все дети
     if signal == 2 or signal == 0:
