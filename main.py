@@ -275,7 +275,7 @@ def make_file(teacher, signal=0):  # формируем файлы для рас
                 AND program = {"'" + program[0] + "'"};'''
             cursor.execute(sql)
             data = cursor.fetchall()
-            row += 1
+            #row += 1
 #            worksheet.write(row, 0, program[0], bold)  # Программа
 #            row += 1
             if len(data) == 0:
@@ -285,6 +285,7 @@ def make_file(teacher, signal=0):  # формируем файлы для рас
  #               row += 1
                 empty_programs.append(program[0])
             else:
+                row += 1
                 worksheet.write(row, 0, program[0], bold)  # Программа
                 row += 1
                 if signal != 0:
@@ -300,9 +301,56 @@ def make_file(teacher, signal=0):  # формируем файлы для рас
                         worksheet.write(row, j, data_tmp, usual)  # Заявки
                     row += 1
         for empty_program in empty_programs:
+            row += 1
             worksheet.write(row, 0, empty_program, bold)  # Программа
             row += 1
             worksheet.write(row, 0, 'Нет заявок', no)
+            row += 1
+
+    # Отказ в зачислении
+    if signal == 1:
+        worksheet = workbook.add_worksheet('Отказ в зачислении')  # Ширина столбцов второго листа
+        worksheet.set_column('A:B', 15)
+        worksheet.set_column('C:C', 30)
+        worksheet.set_column('D:D', 10)
+        worksheet.set_column('E:E', 30)
+        worksheet.set_column('F:F', 15)
+        worksheet.set_column('G:I', 40)
+
+        i = 0
+        row = 0
+        for i in range(len(head)):  # Заголовок
+            worksheet.write(row, i, head[i], header)
+        row += 1
+        empty_programs = []
+        for program in list1:
+            sql = f'''SELECT ask_number,  ask_date, child_name, birth_date, parent_name, phone, program, 
+            status FROM asks_base WHERE status ='Отказ в зачислении' 
+            AND program = {"'" + program[0] + "'"};'''
+            cursor.execute(sql)
+            data = cursor.fetchall()
+            #row += 1
+            if len(data) == 0:
+                empty_programs.append(program[0])
+            else:
+                row += 1
+                worksheet.write(row, 0, program[0], bold)  # Программа
+                row += 1
+                for i in range(len(data)):
+                    j = 0
+                    for j in range(len(data[i])):
+                        data_tmp = None
+                        if j == 1 or j == 3:  # Проверка на наличие даты в ячейке
+                            data_tmp = normal_date(data[i][j])
+                        else:
+                            data_tmp = data[i][j]
+                        worksheet.write(row, j, data_tmp, usual)  # Заявки
+                    row += 1
+        for empty_program in empty_programs:
+            row += 1
+            worksheet.write(row, 0, empty_program, bold)  # Программа
+            row += 1
+            worksheet.write(row, 0, 'Нет отказов', no)
             row += 1
 
     # Все дети
