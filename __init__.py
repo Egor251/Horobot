@@ -235,9 +235,9 @@ if __name__ == '__main__':
     config.read(path)
     admin_mail = config.get('Settings', 'admin_mail')
     kachanova_mail = config.get("Settings", "kachanova_mail")
-    #schedule.every().day.at("12:00").do(__init__)
-    #schedule.every().day.at("20:00").do(__init__)
-    schedule.every(5).minutes.do(__init__)
+    schedule.every().day.at("12:00").do(__init__)
+    schedule.every().day.at("20:00").do(__init__)
+    #schedule.every(30).minutes.do(__init__)
     __init__()
     
     try:

@@ -43,16 +43,26 @@ def enrollment(list, output='result.xlsx'):
             result = True
 
         return result
+    def in_previous_month(date, check_date):
+        result = False
+
+        parts = date.split('.')
+        if str(check_date.year) == parts[2] and str(check_date.month - 1).zfill(2) == parts[1]:
+            result = True
+        if check_date.month == 1 and parts[1] == '12' and str(check_date.year - 1) == parts[2]:
+            result = True
+
+        return result
 
     current_datetime = datetime.now().date()
 
     font = ImageFont.truetype('calibri.ttf', 11)
-    widths = [24.71,21.43,40.71,20.14,20.00,19.86,21.71]
+    widths = [24.71,21.43,40.71,20.14,20.00,19.86,21.71,21.71,21.71,]
 
     full_list = make_full_list(list)
     result_list = []
     for item in tqdm(full_list):
-        if in_this_month(normal_date(item[13]), current_datetime):
+        if in_previous_month(normal_date(item[13]), current_datetime):
             result_list.append([item[0],
                                 item[1],
                                 item[6],
@@ -60,7 +70,8 @@ def enrollment(list, output='result.xlsx'):
                                 item[9],
                                 item[10],
                                 item[12],
-                                item[8], ])
+                                item[8],
+                                item[13], ])
 
     result_list.sort(key = lambda x: x[6])
 
@@ -90,7 +101,7 @@ def enrollment(list, output='result.xlsx'):
         worksheet_budget.write(row, 0, 'Нет зачисленных')
         row += 1
     else:
-        head = ['ФИО Обучающегося', 'Дата рождения', 'Услуга (ДО/ОП)','Уровень программы/ Квалификация', 'Направленность', 'Группа', 'ФИО преподавателя', ]
+        head = ['ФИО Обучающегося', 'Дата рождения', 'Услуга (ДО/ОП)','Уровень программы/ Квалификация', 'Направленность', 'Группа', 'ФИО преподавателя', '!Платно или Бесплатно', '!Дата зачисления', ]
         i = 0
         row = 0
 
@@ -107,7 +118,7 @@ def enrollment(list, output='result.xlsx'):
             if result_list[i][7] == 'бесплатно':
                 worksheet_budget.set_row(row, 15)
                 sizes = [];
-                for j in range(len(result_list[i]) - 1):
+                for j in range(len(result_list[i])):
                     data_tmp = None
                     if j == 1:
                         data_tmp = normal_date(result_list[i][j])
@@ -136,7 +147,7 @@ def enrollment(list, output='result.xlsx'):
         worksheet_offbudget.write(row, 0, 'Нет зачисленных')
         row += 1
     else:
-        head = ['ФИО Обучающегося', 'Дата рождения', 'Услуга (ДО/ОП)','Уровень программы/ Квалификация', 'Направленность', 'Группа', 'ФИО преподавателя', ]
+        head = ['ФИО Обучающегося', 'Дата рождения', 'Услуга (ДО/ОП)','Уровень программы/ Квалификация', 'Направленность', 'Группа', 'ФИО преподавателя', '!Платно или Бесплатно', '!Дата зачисления', ]
         i = 0
         row = 0
 
@@ -154,7 +165,7 @@ def enrollment(list, output='result.xlsx'):
 
             worksheet_offbudget.set_row(row, 15)
             sizes = [];
-            for j in range(len(offbudget[i]) - 1):
+            for j in range(len(offbudget[i])):
                 data_tmp = None
                 if j == 1:
                     data_tmp = normal_date(offbudget[i][j])
